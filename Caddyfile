@@ -1,3 +1,3 @@
-http://localhost {
+http://localhost https://zengym.io {
   reverse_proxy /graphql http://graphql
 }
