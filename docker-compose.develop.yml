@@ -1,0 +1,31 @@
+services:
+  graphql:
+    build:
+      target: 'builder'
+    volumes:
+      - './modules:/source/modules'
+  pgadmin:
+    image: 'dpage/pgadmin4:8.12'
+    restart: 'always'
+    networks:
+      - 'backend'
+    ports:
+      - '8888:80'
+    configs:
+      - source: 'pgservers'
+        target: '/pgadmin4/servers.json'
+      - source: 'pgpass'
+        target: '/home/pgadmin/.pgpass'
+        uid: '5050'
+        mode: 0600
+    environment:
+      - 'PGADMIN_DEFAULT_EMAIL=pau@helloiampau.io'
+      - 'PGADMIN_DEFAULT_PASSWORD=testtest'
+      - 'PGADMIN_CONFIG_SERVER_MODE=False'
+      - 'PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED=False'
+
+configs:
+  pgpass:
+    content: 'postgres:5432:*:${POSTGRES_USER}:${POSTGRES_PASSWORD}'
+  pgservers:
+    content: '{ "Servers": { "1": { "Group": "Servers", "Name": "Zengym", "Host": "postgres", "Port": 5432, "MaintenanceDB": "${POSTGRES_DB}", "Username": "${POSTGRES_USER}", "PassFile": "/pgpass", "SSLMode": "prefer" } } }'

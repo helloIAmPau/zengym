@@ -1,0 +1,17 @@
+{
+  "name": "@zengym/graphql",
+  "version": "0.0.0",
+  "scripts": {
+    "esbuild": "esbuild --platform=node --target=node20.15 --bundle index.js --outdir=dist --sourcemap --loader:.graphql=text",
+    "build": "npm run esbuild -- --minify",
+    "develop": "concurrently 'npm run esbuild -- --watch=forever' 'node --inspect=0.0.0.0 --watch ./dist/index.js'",
+    "start": "node index.js"
+  },
+  "devDependencies": {
+    "concurrently": "9.1.2",
+    "esbuild": "0.24.2",
+    "express": "4.21.2",
+    "graphql": "16.10.0",
+    "graphql-http": "1.22.3"
+  }
+}

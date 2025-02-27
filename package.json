@@ -1,0 +1,13 @@
+{
+  "name": "@zengym/repo",
+  "version": "0.0.0",
+  "scripts": {
+    "migrate:develop": "env $(cat .env.develop | xargs) npm run migrate",
+    "migrate": "docker exec -i zengym-postgres-1 bash -c 'apk add curl jq && psql -U ${POSTGRES_USER} -d ${POSTGRES_DB}' < migrations.sql",
+    "start": "docker compose up --build -d",
+    "develop": "docker compose -f docker-compose.yml -f docker-compose.develop.yml --env-file .env.develop up --build"
+  },
+  "workspaces": [
+    "./modules/@zengym/*"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "name": "@zengym/postgres",
+  "version": "0.0.0",
+  "dependencies": {
+    "pg": "^8.13.3"
+  }
+}

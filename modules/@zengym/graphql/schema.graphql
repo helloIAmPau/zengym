@@ -1,0 +1,33 @@
+scalar UUID
+scalar Date
+
+type TodayRow {
+  completed: Int!
+  pending: Int!
+  total: Int!
+}
+
+type Today {
+  nutrition: TodayRow!
+  activities: TodayRow!
+}
+
+type User {
+  uid: UUID!
+  firstName: String!
+  lastName: String!
+}
+
+type DiaryEntry {
+  uid: UUID!
+  log_type: String!
+  name: String!
+  description: String!
+  completed: Boolean!
+}
+
+type Query {
+  me: User!
+  today: Today!
+  diary(day: Date!): [ DiaryEntry ]!
+}
