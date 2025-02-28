@@ -1,31 +1,37 @@
 import { useLayoutEffect } from 'react';
 import { preventAutoHideAsync, hideAsync } from 'expo-splash-screen';
 import { useFonts, Sora_400Regular, Sora_600SemiBold } from '@expo-google-fonts/sora';
-import { DefaultTheme, createStaticNavigation } from '@react-navigation/native';
+import { createStaticNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { theme } from  '../theme';
+import { navigatorTheme, screenOptions } from  '../theme';
+
+import UserGreeting from './user-greeting';
 
 import Home from './home';
 import Diary from './diary';
 
 preventAutoHideAsync(); 
 
-const navigatorTheme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    background: theme.base
-  }
-};
-
 const BottomTabsNavigator = createBottomTabNavigator({
-  initialScreen: 'Home',
-  screenOptions: {
-    headerShown: false
-  },
+  screenOptions,
+  initialRouteName: 'Home',
   screens: {
-    Home,
-    Diary
+    Diary: {
+      screen: Diary,
+      options: {
+        headerShown: false
+      }
+    },
+    Home: {
+      screen: Home,
+      options: {
+        headerTitle: function() {
+          return (
+            <UserGreeting />
+          );
+        }
+      }
+    }
   }
 });
 

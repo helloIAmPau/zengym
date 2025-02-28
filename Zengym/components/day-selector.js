@@ -3,8 +3,11 @@ import { useMemo, useCallback } from 'react';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import { CaretDoubleLeft, CaretDoubleRight } from 'phosphor-react-native';
 import Heading from './heading';
+import CalendarSelector from './calendar-selector';
+import { Modal, useModal } from './modal';
 
-import { useDiary } from '../contexts/diary';
+import useDay from '../hooks/use-day';
+
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -19,38 +22,44 @@ const styles = StyleSheet.create({
 
 
 export default function DaySelector({ value, onChange }) {
-  const { day, setDay } = useDiary();
+  const { open, close, isOpen } = useModal();
+
+  const onSelect = useCallback(function() {
+    open(<CalendarSelector value={ value } onChange={ onChange } />)
+  }, [ open, value ]);
 
   const onPrevious = useCallback(function() {
-    setDay(day.subtract(1, 'day'));
-  }, [ day ]);
+    onChange(value.subtract(1, 'day'));
+  }, [ value ]);
 
   const onNext = useCallback(function() {
-    setDay(day.add(1, 'day'));
-  }, [ day ]);
+    onChange(value.add(1, 'day'));
+  }, [ value ]);
 
-  const dayLabel = useMemo(function() {
-    return day.calendar(null, {
-      sameDay: '[Today]',
-      nextDay: '[Tomorrow]',
-      nextWeek: 'dddd',
-      lastDay: '[Yesterday]',
-      lastWeek: '[Last] dddd',
-      sameElse: 'D MMM YYYY'
-    });
-  }, [ day ]);
+  const handler = useCallback(function(value) {
+    onChange(value);
+    close();
+  }, [ onChange, close ]);
+
+  const { asLabel } = useDay(value);
+  const dayLabel = asLabel();
 
   return (
-    <View style={ styles.wrapper } >
-      <TouchableOpacity onPress={ onPrevious }>
-        <CaretDoubleLeft />
-      </TouchableOpacity>
-      <TouchableOpacity>
-        <Heading>{ dayLabel }</Heading>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={ onNext }>
-        <CaretDoubleRight />
-      </TouchableOpacity>
-    </View>
+    <>
+      <Modal isOpen={ isOpen } close={ close } >
+        <CalendarSelector value={ value } onChange={ handler } />
+      </Modal>
+      <View style={ styles.wrapper } >
+        <TouchableOpacity onPress={ onPrevious }>
+          <CaretDoubleLeft />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={ onSelect }>
+          <Heading>{ dayLabel }</Heading>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={ onNext }>
+          <CaretDoubleRight />
+        </TouchableOpacity>
+      </View>
+    </>
   );
 };

@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
   }
 });
 
-export default function P({ children, style = [] }) {
+export default function P({ children, style }) {
   return (
     <Text style={ [ styles.p ].concat(style) }>{ children }</Text>
   );

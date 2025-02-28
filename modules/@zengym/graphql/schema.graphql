@@ -23,6 +23,9 @@ type DiaryEntry {
   log_type: String!
   name: String!
   description: String!
+  food_quantity: Float
+  food_calories: Int
+  total_food_calories: Float
   completed: Boolean!
 }
 

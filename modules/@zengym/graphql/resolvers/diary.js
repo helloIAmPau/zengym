@@ -1,21 +1,25 @@
 import { query } from '@zengym/postgres';
 
-export const diary = function({ day }) {
+export const diary = function({ day }, { user }) {
   return query(`
 select
 	uid,
 	log_type,
 	name,
+  food_quantity,
+  food_calories,
+  (food_quantity + food_calories) as total_food_calories,
 	description,
 	completed
 from
 	data.log
 where
-	day = $1
-  `, [  day ]);
+	day = $1 and
+  owner = $2
+  `, [ day, user.uid ]);
 };
 
-export const today = function() {
+export const today = function(_, { user }) {
   return query(`
 select
 	case
@@ -27,15 +31,14 @@ select
 from
 	data.log
 where
-	day = now()
-	and (
-		log_type = 'FOOD'
-		or
+	day = now() and (
+		log_type = 'FOOD' or
 		log_type = 'ACTIVITY'
-	)
+	) and
+  owner = $1
 group by
 	log_type
-  `).then(function(rows) {
+  `, [ user.uid ]).then(function(rows) {
     return rows.reduce(function(main, row) {
       const { log_type, ...todayRow } = row;
 

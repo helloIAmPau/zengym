@@ -4,12 +4,13 @@ create schema if not exists data;
 
 create table if not exists data.log (
   uid uuid not null default gen_random_uuid(),
+  owner uuid not null,
 
   day date not null default now(),
   log_type text not null,
 
-  name text,
-  description text,
+  name text not null,
+  meta jsonb not null default '{}'::jsonb,
 
   weight float,
   body_fat_percentage integer,
@@ -18,7 +19,7 @@ create table if not exists data.log (
   active_calories integer,
 
   food_quantity float,
-  food_calories float,
+  food_calories integer,
   food_proteins float,
   food_carbohydrates float,
   food_fats float,

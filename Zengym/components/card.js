@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
   }
 });
 
-export default function Card({ children, onClick, style = [] }) {
+export default function Card({ children, onClick, style }) {
   return (
     <TouchableOpacity onPress={ onClick } style={ [ styles.card ].concat(style) }>
       { children }

@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import { theme } from '../theme.js';
 
@@ -14,8 +14,8 @@ const styles = StyleSheet.create({
 
 export default function Page({ children }) {
   return (
-    <SafeAreaView style={ styles.page } >
+    <View style={ styles.page } >
       { children }
-    </SafeAreaView>
+    </View>
   );
 };
