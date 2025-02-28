@@ -2,6 +2,7 @@
   "name": "@zengym/repo",
   "version": "0.0.0",
   "scripts": {
+    "changelog": "standard-changelog",
     "migrate:develop": "env $(cat .env.develop | xargs) npm run migrate",
     "migrate": "docker exec -i zengym-postgres-1 bash -c 'apk add curl jq && psql -U ${POSTGRES_USER} -d ${POSTGRES_DB}' < migrations.sql",
     "start": "docker compose up --build -d",
@@ -9,5 +10,8 @@
   },
   "workspaces": [
     "./modules/@zengym/*"
-  ]
+  ],
+  "devDependencies": {
+    "standard-changelog": "6.0.0"
+  }
 }
