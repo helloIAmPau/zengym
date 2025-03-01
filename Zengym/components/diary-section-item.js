@@ -59,7 +59,7 @@ export default function DiarySectionItem({ uid, color, title, completed, icon, e
     navigate(editorName, {
       uid
     });
-  }, [ editorName, navigate, uid ]);
+  }, [ editorName, navigate ]);
 
   return (
     <View style={ styles.wrapper }>
