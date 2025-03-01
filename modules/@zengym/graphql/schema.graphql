@@ -23,7 +23,7 @@ type DiaryEntry {
   uid: UUID!
   log_type: String!
   name: String!
-  meta: JSON!
+  meta: JSON
   food_quantity: Float
   food_calories: Int
   total_food_calories: Float
@@ -32,16 +32,15 @@ type DiaryEntry {
 
 input LogInput {
   uid: UUID
-  day: Date!
-  log_type: String!
-  name: String!
+  day: Date
+  log_type: String
+  name: String
   meta: JSON
   food_quantity: Float
   food_calories: Int
   total_food_calories: Float
   completed: Boolean
 }
-
 
 type Query {
   me: User!

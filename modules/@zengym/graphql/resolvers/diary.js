@@ -9,13 +9,16 @@ select
   food_quantity,
   food_calories,
   (food_quantity + food_calories) as total_food_calories,
-	description,
+	meta,
 	completed
 from
 	data.log_filtered
 where
 	day = $1 and
   owner = $2
+order by
+  completed,
+  created_at desc
   `, [ day, user.uid ]);
 };
 
@@ -27,11 +30,12 @@ select
 		when log_type = 'ACTIVITY' then 'activities'
 	end as log_type,
 	count(uid) filter (where completed = true) AS completed,
-	count(uid) filter (where completed = false) AS pending
+	count(uid) filter (where completed = false) AS pending,
+  count(uid) as total
 from
 	data.log_filtered
 where
-	day = now() and (
+	day = current_date and (
 		log_type = 'FOOD' or
 		log_type = 'ACTIVITY'
 	) and

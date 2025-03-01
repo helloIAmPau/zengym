@@ -5,8 +5,6 @@ import { query } from '@zengym/postgres';
 export const log = function({ logInput }, { user }) {
   logInput.uid = logInput.uid || uuid();
   logInput.owner = user.uid;
-  logInput.meta = logInput.meta || {};
-  logInput.completed = logInput.completed || false;
 
   return query(`
 insert into data.log (
