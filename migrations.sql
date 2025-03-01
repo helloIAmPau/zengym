@@ -3,14 +3,14 @@ begin;
 create schema if not exists data;
 
 create table if not exists data.log (
-  uid uuid not null default gen_random_uuid(),
+  uid uuid not null,
   owner uuid not null,
 
-  day date not null default now(),
+  day date not null,
   log_type text not null,
 
   name text not null,
-  meta jsonb not null default '{}'::jsonb,
+  meta jsonb not null,
 
   weight float,
   body_fat_percentage integer,
@@ -29,11 +29,21 @@ create table if not exists data.log (
   fats_target_index float,
   target_calories_delta integer,
 
-  completed boolean not null default false,
+  completed boolean not null,
 
-  created_at timestamp not null default now(),
-  updated_at timestamp not null default now(),
-  completed_at timestamp
+  created_at timestamp not null default now()
+);
+
+create or replace view
+  data.log_filtered
+as (
+  select distinct on (uid)
+    *
+  from
+    data.log
+  order by
+    uid,
+    created_at desc
 );
 
 commit;

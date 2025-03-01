@@ -12,7 +12,7 @@ select
 	description,
 	completed
 from
-	data.log
+	data.log_filtered
 where
 	day = $1 and
   owner = $2
@@ -29,7 +29,7 @@ select
 	count(uid) filter (where completed = true) AS completed,
 	count(uid) filter (where completed = false) AS pending
 from
-	data.log
+	data.log_filtered
 where
 	day = now() and (
 		log_type = 'FOOD' or

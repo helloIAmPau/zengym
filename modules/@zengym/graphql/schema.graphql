@@ -1,5 +1,6 @@
 scalar UUID
 scalar Date
+scalar JSON
 
 type TodayRow {
   completed: Int!
@@ -22,15 +23,32 @@ type DiaryEntry {
   uid: UUID!
   log_type: String!
   name: String!
-  description: String!
+  meta: JSON!
   food_quantity: Float
   food_calories: Int
   total_food_calories: Float
   completed: Boolean!
 }
 
+input LogInput {
+  uid: UUID
+  day: Date!
+  log_type: String!
+  name: String!
+  meta: JSON
+  food_quantity: Float
+  food_calories: Int
+  total_food_calories: Float
+  completed: Boolean
+}
+
+
 type Query {
   me: User!
   today: Today!
   diary(day: Date!): [ DiaryEntry ]!
+}
+
+type Mutation {
+  log(logInput: LogInput!): UUID!
 }
