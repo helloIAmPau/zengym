@@ -9,7 +9,7 @@ export const theme = {
   baseUnit: 16,
   font: 'Sora_400Regular',
   fontBold: 'Sora_600SemiBold',
-  borderRadius: 16
+  borderRadius: 4
 };
 
 export const screenOptions = {

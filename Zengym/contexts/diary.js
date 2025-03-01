@@ -13,7 +13,7 @@ export const useDiary = function() {
 
 export const DiaryProvider = function({ children }) {
   const [ day, setDay ] = useState(dayjs());
-  const [ entries, setEmtries ] = useState([]);
+  const [ entries, setEntries ] = useState([]);
 
   const { format } = useDay(day);
 
@@ -23,7 +23,7 @@ query($day: Date!) {
     uid,
     log_type,
     name,
-    description,
+    meta,
     food_quantity,
     food_calories,
     total_food_calories,

@@ -1,55 +1,49 @@
-import { useCallback, useMemo, useState } from 'react';
-import { TouchableOpacity, StyleSheet } from 'react-native';
-import { View } from 'react-native';
-import Heading from './heading';
-import DiarySectionAddItem from './diary-section-add-item';
+import { useMemo } from 'react';
+import { useDiary } from '../contexts/diary';
+import DiarySectionItem from './diary-section-item';
+import Accordion from './accordion';
+import { Plus } from 'phosphor-react-native';
 
-import { CaretUp, CaretDown } from 'phosphor-react-native';
+import { theme } from '../theme';
 
-const styles = StyleSheet.create({
-  title: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
-  }
-});
+export default function DiarySection({ type, label, editorName, icon, title, onTotal }) {
+  const { entries } = useDiary();
 
-export default function DiarySection({ icon, title, initialOpen = true, entries = [], counter = -1, label, editorName }) {
-  const [ isOpen, setIsOpen ] =  useState(initialOpen);
+  const filteredEntries = useMemo(function() {
+    return entries.filter(function({ log_type }) {
+      return log_type === type;
+    });
+  }, [ entries, type ]);
 
-  const toggle = useCallback(function() {
-    setIsOpen(!isOpen);
-  }, [ isOpen ]);
-
-  const caret = useMemo(function() {
-    if(isOpen === true) {
+  const items = useMemo(function() {
+    return filteredEntries.map(function(entry) {
       return (
-        <CaretUp />
+        <DiarySectionItem
+          title={ entry.name }
+          completed={ entry.completed }
+          editorName={ editorName }
+          key={ entry.uid }
+          uid={ entry.uid }
+          />
       );
-    }
-
-    return (
-      <CaretDown />
+    }).concat(
+      <DiarySectionItem
+        color={ theme.color2 }
+        icon={ Plus }
+        title={ `Add ${ label }` }
+        key='add-item'
+        editorName={ editorName }
+        />
     );
-  }, [ isOpen ])
+  }, [ filteredEntries, label, editorName ]);
 
-  const content = useMemo(function() {
-    if(isOpen === false) {
-      return;
-    }
+  console.log(items);
 
-    return (
-      <DiarySectionAddItem label={ label } editorName={ editorName } />
-    );
-  }, [ isOpen, label, editorName ]);
+  const total = useMemo(function() {
+    return onTotal({ filteredEntries });
+  }, [ filteredEntries, onTotal ])
 
   return (
-    <View>
-      <TouchableOpacity onPress={ toggle } style={ styles.title }>
-        <Heading icon={ icon }>{ title } ({ counter })</Heading>
-        { caret }
-      </TouchableOpacity>
-      { content }
-    </View>
+    <Accordion items={ items } icon={ icon } title={ title } total={ total } />
   );
 };

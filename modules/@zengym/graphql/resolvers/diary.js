@@ -12,7 +12,7 @@ select
 	meta,
 	completed
 from
-	data.log_filtered
+	data.log_unified
 where
 	day = $1 and
   owner = $2
@@ -33,7 +33,7 @@ select
 	count(uid) filter (where completed = false) AS pending,
   count(uid) as total
 from
-	data.log_filtered
+	data.log_unified
 where
 	day = current_date and (
 		log_type = 'FOOD' or

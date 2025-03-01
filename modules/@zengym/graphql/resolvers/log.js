@@ -1,5 +1,6 @@
 import { v4 as uuid } from 'uuid';
 import { query } from '@zengym/postgres';
+import emit from '@zengym/events/emitter';
 
 // We use append only technique so we can rebuild the entire history of each item
 export const log = function({ logInput }, { user }) {
@@ -49,7 +50,7 @@ insert into data.log (
   $18,
   $19,
   $20
-) returning uid
+) returning uid, owner
   `, [
     logInput.uid,
     logInput.owner,
@@ -71,7 +72,13 @@ insert into data.log (
     logInput.fats_target_index,
     logInput.target_calories_delta,
     logInput.completed
-  ]).then(function([ { uid } ]) {
-    return uid;
+  ]).then(function([ { uid, owner } ]) {
+    return emit(owner, {
+      log_uid: uid
+    }).catch(function({ message }) {
+      console.log(`Unable to emit ${ uid }: ${ message }`);
+    }).then(function() {
+      return uid;
+    });
   });
 };

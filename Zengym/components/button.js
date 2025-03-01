@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 import { theme } from '../theme';
@@ -13,7 +14,10 @@ const styles = StyleSheet.create({
     paddingLeft: 0.75 * theme.baseUnit,
     paddingRight: 0.75 * theme.baseUnit,
 
-    borderRadius: 0.5 * theme.borderRadius
+    borderRadius: theme.borderRadius
+  },
+  disabled: {
+    opacity: 0.4
   },
   primary: {
     backgroundColor: theme.primary
@@ -25,19 +29,33 @@ const styles = StyleSheet.create({
 });
 
 
-export default function Button({ children, icon: Icon, onClick, type = 'primary' }) {
-  if(Icon == null) {
-    return (
-      <TouchableOpacity onPress={ onClick } style={ [ styles.wrapper, styles[type] ] }>
+export default function Button({ children, icon: Icon, onClick, type = 'primary', disabled=false }) {
+  const content = useMemo(function() {
+    if(Icon == null) {
+      return (
         <Text>{ children }</Text>
-      </TouchableOpacity>
+      );
+    }
+
+    return (
+      <>
+        <Icon size={ theme.baseUnit } />
+        <Text>{ children }</Text>
+      </>
     );
-  }
+  }, [ Icon ]);
+
+  const disabled_style = useMemo(function() {
+    if(disabled === false) {
+      return;
+    }
+
+    return styles.disabled;
+  }, [ disabled ]);
 
   return (
-    <TouchableOpacity onPress={ onClick } style={ [ styles.wrapper, styles[type] ] }>
-      <Icon size={ theme.baseUnit } />
-      <Text>{ children }</Text>
+    <TouchableOpacity disabled={ disabled } onPress={ onClick } style={ [ styles.wrapper, styles[type], disabled_style ] }>
+      { content }
     </TouchableOpacity>
   );
 };

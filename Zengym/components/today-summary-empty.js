@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
   }
 });
 
-export default function TodayEmptyDiary() {
+export default function TodaySummaryEmpty() {
   return (
     <View style={ styles.wrapper }>
       <BookOpen size={ 3 * theme.baseUnit } />
