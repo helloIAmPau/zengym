@@ -44,7 +44,7 @@ input LogInput {
 
 type Query {
   me: User!
-  today: Today!
+  today(day: Date!): Today!
   diary(day: Date!): [ DiaryEntry ]!
 }
 

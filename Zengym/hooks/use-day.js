@@ -5,6 +5,10 @@ import calendar from 'dayjs/plugin/calendar';
 dayjs.extend(calendar);
 
 export default function(value) {
+  if(value == null) {
+    value = dayjs();
+  }
+
   const format = useCallback(function() {
     return value.format('YYYY-MM-DD');
   }, [ value ]);

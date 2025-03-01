@@ -16,6 +16,8 @@ export default function({ query, variables }, events) {
     const handler = function() {
       client(variables).then(function(data) {
         setData(data);
+      }).catch(function(error) {
+        console.log(error);
       });
     };
     events.forEach(function(evt) {

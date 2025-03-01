@@ -4,6 +4,7 @@ import Card from './card';
 import TodaySummaryEmpty from './today-summary-empty';
 import TodaySummary from './today-summary';
 import Loading from './loading';
+import useDay from '../hooks/use-day';
 
 import { useNavigation } from '@react-navigation/native';
 import useSubscription from '../hooks/use-subscription';
@@ -11,10 +12,12 @@ import useSubscription from '../hooks/use-subscription';
 export default function Today() {
   const { navigate } = useNavigation();
 
+  const { format } = useDay();
+
   const { data: { today }, isLoading } = useSubscription({
     query: `
-query {
-  today {
+query($day: Date!) {
+  today(day: $day) {
     nutrition {
       pending
       completed
@@ -27,7 +30,12 @@ query {
     }
   }
 }
-    `
+    `,
+      variables: useMemo(function() {
+        return {
+          day: format()
+        };
+      }, [])
   }, [ 'FOOD', 'ACTIVITY' ]);
 
   const onClick = useCallback(function() {

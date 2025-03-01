@@ -22,7 +22,7 @@ order by
   `, [ day, user.uid ]);
 };
 
-export const today = function(_, { user }) {
+export const today = function({ day }, { user }) {
   return query(`
 select
 	case
@@ -35,14 +35,14 @@ select
 from
 	data.log_unified
 where
-	day = current_date and (
+	day = $1 and (
 		log_type = 'FOOD' or
 		log_type = 'ACTIVITY'
 	) and
-  owner = $1
+  owner = $2
 group by
 	log_type
-  `, [ user.uid ]).then(function(rows) {
+  `, [ day, user.uid ]).then(function(rows) {
     return rows.reduce(function(main, row) {
       const { log_type, ...todayRow } = row;
 
