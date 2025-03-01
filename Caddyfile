@@ -1,3 +1,6 @@
 http://localhost http://zengym.io {
   reverse_proxy /graphql http://graphql
+
+  reverse_proxy /events http://events
+  reverse_proxy /events/* http://events
 }
