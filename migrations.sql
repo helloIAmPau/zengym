@@ -33,35 +33,35 @@ create table if not exists data.log (
   completed boolean
 );
 
-drop view data.log_filtered;
+drop view if exists data.log_unified;
 
 create view
-  data.log_filtered
+  data.log_unified
 as (
   select
   	uid,
   	owner,
-  	(array_agg(created_at))[1] as created_at,
-  	(array_agg(day) filter (where day is not null))[1] as day,
-  	(array_agg(log_type) filter (where log_type is not null))[1] as log_type,
-  	(array_agg(name) filter (where name is not null))[1] as name,
-  	(array_agg(meta) filter (where meta is not null))[1] as meta,
-  	(array_agg(weight) filter (where weight is not null))[1] as weight,
-  	(array_agg(body_fat_percentage) filter (where body_fat_percentage is not null))[1] as body_fat_percentage,
-  	(array_agg(resting_calories) filter (where resting_calories is not null))[1] as resting_calories,
-  	(array_agg(active_calories) filter (where active_calories is not null))[1] as active_calories,
-  	(array_agg(food_quantity) filter (where food_quantity is not null))[1] as food_quantity,
-  	(array_agg(food_calories) filter (where food_calories is not null))[1] as food_calories,
-  	(array_agg(food_proteins) filter (where food_proteins is not null))[1] as food_proteins,
-  	(array_agg(food_carbohydrates) filter (where food_carbohydrates is not null))[1] as food_carbohydrates,
-  	(array_agg(food_fats) filter (where food_fats is not null))[1] as food_fats,
-  	(array_agg(food_alcohol) filter (where food_alcohol is not null))[1] as food_alcohol,
-  	(array_agg(protein_target_index) filter (where protein_target_index is not null))[1] as protein_target_index,
-  	(array_agg(fats_target_index) filter (where fats_target_index is not null))[1] as fats_target_index,
-  	(array_agg(target_calories_delta) filter (where target_calories_delta is not null))[1] as target_calories_delta,
-  	(array_agg(completed) filter (where completed is not null))[1] as completed
+  	(array_agg(created_at order by created_at desc))[1] as created_at,
+  	(array_agg(day order by created_at desc) filter (where day is not null))[1] as day,
+  	(array_agg(log_type order by created_at desc) filter (where log_type is not null))[1] as log_type,
+  	(array_agg(name order by created_at desc) filter (where name is not null))[1] as name,
+  	(array_agg(meta order by created_at desc) filter (where meta is not null))[1] as meta,
+  	(array_agg(weight order by created_at desc) filter (where weight is not null))[1] as weight,
+  	(array_agg(body_fat_percentage order by created_at desc) filter (where body_fat_percentage is not null))[1] as body_fat_percentage,
+  	(array_agg(resting_calories order by created_at desc) filter (where resting_calories is not null))[1] as resting_calories,
+  	(array_agg(active_calories order by created_at desc) filter (where active_calories is not null))[1] as active_calories,
+  	(array_agg(food_quantity order by created_at desc) filter (where food_quantity is not null))[1] as food_quantity,
+  	(array_agg(food_calories order by created_at desc) filter (where food_calories is not null))[1] as food_calories,
+  	(array_agg(food_proteins order by created_at desc) filter (where food_proteins is not null))[1] as food_proteins,
+  	(array_agg(food_carbohydrates order by created_at desc) filter (where food_carbohydrates is not null))[1] as food_carbohydrates,
+  	(array_agg(food_fats order by created_at desc) filter (where food_fats is not null))[1] as food_fats,
+  	(array_agg(food_alcohol order by created_at desc) filter (where food_alcohol is not null))[1] as food_alcohol,
+  	(array_agg(protein_target_index order by created_at desc) filter (where protein_target_index is not null))[1] as protein_target_index,
+  	(array_agg(fats_target_index order by created_at desc) filter (where fats_target_index is not null))[1] as fats_target_index,
+  	(array_agg(target_calories_delta order by created_at desc) filter (where target_calories_delta is not null))[1] as target_calories_delta,
+  	(array_agg(completed order by created_at desc) filter (where completed is not null))[1] as completed
   from
-  	(select * from data.log order by created_at desc)
+  	data.log
   group by
   	uid,
   	owner
