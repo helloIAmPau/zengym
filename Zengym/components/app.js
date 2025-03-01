@@ -4,6 +4,7 @@ import { useFonts, Sora_400Regular, Sora_600SemiBold } from '@expo-google-fonts/
 import { createStaticNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { navigatorTheme, screenOptions } from  '../theme';
+import { EventsProvider } from '../contexts/events';
 
 import UserGreeting from './user-greeting';
 
@@ -52,6 +53,8 @@ export default function App() {
   }, [ loaded ]);
 
   return (
-    <Navigation theme={ navigatorTheme } />
+    <EventsProvider>
+      <Navigation theme={ navigatorTheme } />
+    </EventsProvider>
   );
 }

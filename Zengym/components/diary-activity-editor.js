@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from 'react';
+import { useLayoutEffect, useMemo, useCallback } from 'react';
 import DiaryActivityEditorForm from './diary-activity-editor-form'
 import Page from './page';
 import { Form } from '../contexts/form';
@@ -10,21 +10,36 @@ import useLog from '../hooks/use-log';
 import { useDiary } from '../contexts/diary';
 import useDay from '../hooks/use-day';
 
-export default function DiaryActivityEditor() {
-  const { day } = useDiary();
+export default function DiaryActivityEditor({ route }) {
+  const { day, diary } = useDiary();
   const { format } = useDay(day);
+  const { uid } = route.params;
 
   const { reset } = useNavigation();
 
   const [ log ] = useLog();
 
   const defaults = useMemo(function() {
-    return {
+    const defaults = {
       log_type: 'ACTIVITY',
       day: format(),
       completed: false
     };
-  }, [ format ]);
+
+    if(uid == null) {
+      return defaults;
+    }
+
+    const { name } = diary.find(function(item) {
+      return uid === item.uid;
+    });
+
+    return {
+      ...defaults,
+      uid,
+      name
+    };
+  }, [ format, uid, diary ]);
 
   const onSubmit = useCallback(function(values) {
     return log(values).then(function() {

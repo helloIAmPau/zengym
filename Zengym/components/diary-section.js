@@ -7,13 +7,17 @@ import { Plus } from 'phosphor-react-native';
 import { theme } from '../theme';
 
 export default function DiarySection({ type, label, editorName, icon, title, onTotal }) {
-  const { entries } = useDiary();
+  const { diary, isLoading } = useDiary();
 
   const filteredEntries = useMemo(function() {
-    return entries.filter(function({ log_type }) {
+    if(isLoading === true) {
+      return [];
+    }
+
+    return diary.filter(function({ log_type }) {
       return log_type === type;
     });
-  }, [ entries, type ]);
+  }, [ diary, type ]);
 
   const items = useMemo(function() {
     return filteredEntries.map(function(entry) {
@@ -36,8 +40,6 @@ export default function DiarySection({ type, label, editorName, icon, title, onT
         />
     );
   }, [ filteredEntries, label, editorName ]);
-
-  console.log(items);
 
   const total = useMemo(function() {
     return onTotal({ filteredEntries });

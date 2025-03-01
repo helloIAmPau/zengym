@@ -1,9 +1,8 @@
 import { useContext, createContext, useMemo, useState, useLayoutEffect } from 'react';
 
-import useGraphql from '../hooks/use-graphql';
-
 import dayjs from 'dayjs';
 import useDay from '../hooks/use-day';
+import useSubscription from '../hooks/use-subscription';
 
 const Context = createContext();
 
@@ -13,11 +12,10 @@ export const useDiary = function() {
 
 export const DiaryProvider = function({ children }) {
   const [ day, setDay ] = useState(dayjs());
-  const [ entries, setEntries ] = useState([]);
-
   const { format } = useDay(day);
 
-  const [ diaryQuery, isLoading ] = useGraphql(`
+  const { data: { diary }, isLoading } = useSubscription({
+    query: `
 query($day: Date!) {
   diary(day: $day) {
     uid,
@@ -30,24 +28,22 @@ query($day: Date!) {
     completed
   }
 }
-  `, true);
-
-  useLayoutEffect(function() {
-    diaryQuery({
-      day: format()
-    }).then(function({ diary }) {
-      setEntries(diary);
-    });
-  }, [ format ]);
+    `,
+    variables: useMemo(function() {
+      return {
+        day: format()
+      };
+    }, [ format ])
+  }, [ 'FOOD', 'ACTIVITY' ]);
 
   const value = useMemo(function() {
     return {
       day,
       setDay,
       isLoading,
-      entries
+      diary
     };
-  }, [ day, isLoading, entries ]);
+  }, [ day, isLoading, diary ]);
 
   return (
     <Context.Provider value={ value }>

@@ -56,8 +56,10 @@ export default function DiarySectionItem({ uid, color, title, completed, icon, e
   }, [ uid ]);
 
   const onPress = useCallback(function() {
-    navigate(editorName);
-  }, [ editorName, navigate ]);
+    navigate(editorName, {
+      uid
+    });
+  }, [ editorName, navigate, uid ]);
 
   return (
     <View style={ styles.wrapper }>

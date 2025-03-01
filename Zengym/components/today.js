@@ -6,14 +6,13 @@ import TodaySummary from './today-summary';
 import Loading from './loading';
 
 import { useNavigation } from '@react-navigation/native';
-
-import useGraphql from '../hooks/use-graphql';
+import useSubscription from '../hooks/use-subscription';
 
 export default function Today() {
   const { navigate } = useNavigation();
-  const [ info, setInfo ] = useState({});
 
-  const [ todayQuery, isLoading ] = useGraphql(`
+  const { data: { today }, isLoading } = useSubscription({
+    query: `
 query {
   today {
     nutrition {
@@ -28,35 +27,28 @@ query {
     }
   }
 }
-  `, true);
+    `
+  }, [ 'FOOD', 'ACTIVITY' ]);
 
   const onClick = useCallback(function() {
     navigate('Diary');
   }, [ navigate ]);
-
-  useLayoutEffect(function() {
-    todayQuery().then(function({ today }) {
-      setInfo(today);
-    }).catch(function(error) {
-      console.log(error);
-    });
-  }, [ todayQuery ]);
 
   const content = useMemo(function() {
     if(isLoading === true) {
       return;
     }
 
-    if(info.nutrition.total === 0 && info.activities.total === 0) {
+    if(today.nutrition.total === 0 && today.activities.total === 0) {
       return (
         <TodaySummaryEmpty />
       );
     }
 
     return (
-      <TodaySummary info={ info } />
+      <TodaySummary info={ today } />
     );
-  }, [ info, isLoading ]);
+  }, [ today, isLoading ]);
 
   return (
     <Loading isLoading={ isLoading }>

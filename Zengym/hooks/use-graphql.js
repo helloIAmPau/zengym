@@ -5,9 +5,8 @@ export default function(query, initialIsLoading) {
 
   const client = useCallback(function(variables = {}) {
     setIsLoading(true);
-    console.log(variables);
 
-    return fetch(`${ global.API_HOST }/graphql`, {
+    return fetch(`${ global.API_URL }/graphql`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
