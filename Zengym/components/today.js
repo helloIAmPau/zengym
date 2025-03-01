@@ -1,7 +1,8 @@
 import { useMemo, useState, useLayoutEffect, useCallback } from 'react';
 
 import Card from './card';
-import TodayEmptyDiary from './today-empty-diary';
+import TodaySummaryEmpty from './today-summary-empty';
+import TodaySummary from './today-summary';
 import Loading from './loading';
 
 import { useNavigation } from '@react-navigation/native';
@@ -36,7 +37,9 @@ query {
   useLayoutEffect(function() {
     todayQuery().then(function({ today }) {
       setInfo(today);
-    })
+    }).catch(function(error) {
+      console.log(error);
+    });
   }, [ todayQuery ]);
 
   const content = useMemo(function() {
@@ -46,10 +49,13 @@ query {
 
     if(info.nutrition.total === 0 && info.activities.total === 0) {
       return (
-        <TodayEmptyDiary />
+        <TodaySummaryEmpty />
       );
     }
 
+    return (
+      <TodaySummary info={ info } />
+    );
   }, [ info, isLoading ]);
 
   return (

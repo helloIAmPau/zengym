@@ -31,8 +31,8 @@ const styles = StyleSheet.create({
   },
   content: {
     backgroundColor: theme.base2,
-    borderTopLeftRadius: theme.borderRadius,
-    borderTopRightRadius: theme.borderRadius,
+    borderTopLeftRadius: 2 * theme.borderRadius,
+    borderTopRightRadius: 2 * theme.borderRadius,
     paddingTop: theme.baseUnit,
     paddingRight: 0.75 * theme.baseUnit,
     paddingLeft: 0.75 * theme.baseUnit,

@@ -1,18 +1,20 @@
-import { useMemo } from 'react';
+import { useCallback } from 'react';
 import DiarySection from './diary-section';
 import { PersonSimpleTaiChi } from 'phosphor-react-native';
-import { useDiary } from '../contexts/diary';
 
 export default function ActivitiesDiarySection() {
-  const { entries } = useDiary();
-
-  const activities = useMemo(function() {
-    return entries.filter(function({ type }) {
-      return type === 'ACTIVITY';
-    });
-  }, [ entries ]);
+  const onTotal = useCallback(function({ filteredEntries }) {
+    return filteredEntries.length;
+  }, []);
 
   return (
-    <DiarySection editorName='DiaryActivityEditor' label='Activity' icon={ PersonSimpleTaiChi } title='Activities' entries={ activities } counter={ activities.length } />
+    <DiarySection
+      type='ACTIVITY'
+      label='Activity'
+      editorName='DiaryActivityEditor'
+      icon={ PersonSimpleTaiChi }
+      title='Activities'
+      onTotal={ onTotal }
+      />
   );
 };
