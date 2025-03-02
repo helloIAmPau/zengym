@@ -67,4 +67,41 @@ as (
   	owner
 );
 
+create extension if not exists file_fdw;
+create server if not exists csv_server foreign data wrapper file_fdw;
+
+create foreign table if not exists data.openfood_csv_data (
+  code text,
+  generic_name text,
+  product_name text,
+  brands text,
+  alcohol_100g text,
+  proteins_100g text,
+  carbohydrates_100g text,
+  fat_100g text,
+  "energy-kcal_100g" text
+)
+server csv_server
+options (
+  program 'curl -L ''https://static.openfoodfacts.org/data/openfoodfacts-products.jsonl.gz'' | gunzip | jq -r ''[.code, .generic_name, .product_name, .brands, .nutriments.alcohol_100g, .nutriments.proteins_100g, .nutriments.carbohydrates_100g, .nutriments.fat_100g, .nutriments."energy-kcal_100g" ] | @csv''',
+  format 'csv',
+  header 'false',
+  delimiter ','
+);
+
+create table if not exists data.openfood as (
+  select
+    code,
+    generic_name,
+    product_name,
+    brands,
+    cast(alcohol_100g as numeric) as food_alcohol,
+    cast(proteins_100g as numeric) as food_proteins,
+    cast(carbohydrates_100g as numeric) as food_carbohydrates,
+    cast(fat_100g as numeric) as food_fats,
+    cast("energy-kcal_100g" as numeric) as food_calories
+  from
+  data.openfood_csv_data
+);
+
 commit;
