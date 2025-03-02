@@ -1,0 +1,7 @@
+{
+  "name": "@zengym/llm",
+  "version": "0.0.0",
+  "devDependencies": {
+    "@google/generative-ai": "0.22.0"
+  }
+}
