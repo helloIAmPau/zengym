@@ -40,7 +40,7 @@ query($day: Date!) {
 
   const onClick = useCallback(function() {
     navigate('Diary');
-  }, [ navigate ]);
+  }, [ navigate, format ]);
 
   const content = useMemo(function() {
     if(isLoading === true) {

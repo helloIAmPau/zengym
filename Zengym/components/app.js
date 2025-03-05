@@ -6,10 +6,14 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { navigatorTheme, screenOptions } from  '../theme';
 import { EventsProvider } from '../contexts/events';
 
+import { UserFocus } from 'phosphor-react-native';
+
 import UserGreeting from './user-greeting';
+import Title from './title';
 
 import Home from './home';
 import Diary from './diary';
+import Metrics from './metrics';
 
 preventAutoHideAsync(); 
 
@@ -17,10 +21,14 @@ const BottomTabsNavigator = createBottomTabNavigator({
   screenOptions,
   initialRouteName: 'Home',
   screens: {
-    Diary: {
-      screen: Diary,
+    Metrics: {
+      screen: Metrics,
       options: {
-        headerShown: false
+        headerTitle: function() {
+          return (
+            <Title icon={ UserFocus }>Metrics</Title>
+          );
+        }
       }
     },
     Home: {
@@ -31,6 +39,12 @@ const BottomTabsNavigator = createBottomTabNavigator({
             <UserGreeting />
           );
         }
+      }
+    },
+    Diary: {
+      screen: Diary,
+      options: {
+        headerShown: false
       }
     }
   }

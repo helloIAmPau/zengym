@@ -27,7 +27,8 @@ export default function(value) {
   return useMemo(function() {
     return {
       asLabel,
-      format
+      format,
+      day: value
     };
-  }, [ format, asLabel ]);
+  }, [ format, asLabel, value ]);
 };

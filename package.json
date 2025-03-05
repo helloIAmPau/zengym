@@ -4,9 +4,10 @@
   "scripts": {
     "changelog": "standard-changelog",
     "migrate:develop": "env $(cat .env.develop | xargs) npm run migrate",
-    "migrate": "docker exec -i zengym-postgres-1 bash -c 'apk add curl jq && psql -U ${POSTGRES_USER} -d ${POSTGRES_DB}' < migrations.sql",
+    "migrate": "docker exec -i zengym-postgres-1 psql -U ${ZENGYM_POSTGRES_USER} -d ${ZENGYM_POSTGRES_DB} < migrations.sql",
     "start": "docker compose up --build -d",
-    "develop": "docker compose -f docker-compose.yml -f docker-compose.develop.yml --env-file .env.develop up --build"
+    "develop": "env $(cat .env.develop | xargs) docker compose -f docker-compose.yml -f docker-compose.develop.yml up --build",
+    "stop": "docker compose -f docker-compose.yml -f docker-compose.develop.yml down"
   },
   "workspaces": [
     "./modules/@zengym/*"

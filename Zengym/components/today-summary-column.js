@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import Heading from './heading';
 import P from './p';
 
-import { Confetti } from 'phosphor-react-native';
+import { Confetti, SmileySad } from 'phosphor-react-native';
 
 import { theme } from '../theme';
 
@@ -27,6 +27,12 @@ const styles = StyleSheet.create({
 
 export default function TodaySummaryColumn({ icon: Icon, info, label }) {
   const values = useMemo(function() {
+    if(info.total === 0) {
+      return (
+        <Heading style={ styles.completed_heading } icon={ SmileySad }>No Entries</Heading>
+      );
+    }
+
     if(info.total === info.completed) {
       return (
         <Heading style={ styles.completed_heading } icon={ Confetti }>Completed</Heading>
