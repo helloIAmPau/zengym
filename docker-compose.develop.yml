@@ -31,6 +31,6 @@ services:
 
 configs:
   pgpass:
-    content: 'postgres:5432:*:${POSTGRES_USER}:${POSTGRES_PASSWORD}'
+    content: 'postgres:5432:*:${ZENGYM_POSTGRES_USER}:${ZENGYM_POSTGRES_PASSWORD}'
   pgservers:
-    content: '{ "Servers": { "1": { "Group": "Servers", "Name": "Zengym", "Host": "postgres", "Port": 5432, "MaintenanceDB": "${POSTGRES_DB}", "Username": "${POSTGRES_USER}", "PassFile": "/pgpass", "SSLMode": "prefer" } } }'
+    content: '{ "Servers": { "1": { "Group": "Servers", "Name": "Zengym", "Host": "postgres", "Port": 5432, "MaintenanceDB": "${ZENGYM_POSTGRES_DB}", "Username": "${ZENGYM_POSTGRES_USER}", "PassFile": "/pgpass", "SSLMode": "prefer" } } }'
