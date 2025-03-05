@@ -67,6 +67,14 @@ as (
   	owner
 );
 
+create language plpython3u;
+create or replace function create_embeddings_from_text(text) returns text
+as $$
+  from zengym import hello
+
+  return hello()
+$$ language plpython3u;
+
 create extension if not exists file_fdw;
 create server if not exists csv_server foreign data wrapper file_fdw;
 
@@ -91,17 +99,41 @@ options (
 
 create table if not exists data.openfood as (
   select
-    code,
-    generic_name,
-    product_name,
-    brands,
-    cast(alcohol_100g as numeric) as food_alcohol,
-    cast(proteins_100g as numeric) as food_proteins,
-    cast(carbohydrates_100g as numeric) as food_carbohydrates,
-    cast(fat_100g as numeric) as food_fats,
-    cast("energy-kcal_100g" as numeric) as food_calories
-  from
-  data.openfood_csv_data
+  	*,
+  	now() as created_at,
+  	md5(concat(code, '::', product_name, '::', brands, '::', name, food_alcohol, food_proteins, food_carbohydrates, food_fats, food_calories)) as hash
+  from (
+  	select
+      	code,
+      	case
+    			when generic_name is null or trim(generic_name) = '' then trim(concat(brands, ' ', product_name))
+    			else generic_name
+  		end as name,
+      	product_name,
+      	brands,
+      	case
+    			when alcohol_100g is null then 0
+  	  		else cast(alcohol_100g as numeric)
+  		end as food_alcohol,
+      	case
+    			when proteins_100g is null then 0
+    			else cast(proteins_100g as numeric)
+  		end as food_proteins,
+      	case
+    			when carbohydrates_100g is null then 0
+    			else cast(carbohydrates_100g as numeric)
+  		end as food_carbohydrates,
+  		case
+    			when fat_100g is null then 0
+    			else cast(fat_100g as numeric)
+  		end as food_fats,
+      	case
+    			when "energy-kcal_100g" is null then 0
+    			else cast("energy-kcal_100g" as numeric)
+  		end as food_calories
+    	from
+    		data.openfood_csv_data
+  )
 );
 
 commit;

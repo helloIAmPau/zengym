@@ -1,6 +1,7 @@
 scalar UUID
 scalar Date
 scalar JSON
+scalar Base64
 
 type TodayRow {
   completed: Int!
@@ -30,6 +31,18 @@ type DiaryEntry {
   completed: Boolean!
 }
 
+type Food {
+  code: String
+  name: String!
+  product_name: String
+  brands: String
+  food_alcohol: Float!
+  food_proteins: Float!
+  food_carbohydrats: Float!
+  food_fats: Float!
+  food_calories: Int!
+}
+
 input LogInput {
   uid: UUID
   day: Date
@@ -38,7 +51,10 @@ input LogInput {
   meta: JSON
   food_quantity: Float
   food_calories: Int
-  total_food_calories: Float
+  food_alcohol: Float
+  food_proteins: Float
+  food_carbohydrats: Float
+  food_fats: Float
   completed: Boolean
 }
 
@@ -46,6 +62,7 @@ type Query {
   me: User!
   today(day: Date!): Today!
   diary(day: Date!): [ DiaryEntry ]!
+  searchFood(query: String!): [ Food ]!
 }
 
 type Mutation {
