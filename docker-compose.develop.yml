@@ -9,6 +9,14 @@ services:
       target: 'builder'
     volumes:
       - './modules:/source/modules'
+  pgdevelop:
+    image: 'zengym/pgdevelop:0.0.0'
+    restart: 'always'
+    build:
+      context: './postgres'
+    volumes:
+      - './postgres/zengym:/source'
+    command: 'sh -c "export PYTHONPATH="${PYTHONPATH}:/source" && virtualenv /python-envs/dev && . /python-envs/dev/bin/activate && pip install watchdog && cd /source && watchmedo auto-restart --patterns=\"*.py\" --recursive --signal SIGKILL python test.py"'
   pgadmin:
     image: 'dpage/pgadmin4:8.12'
     restart: 'always'

@@ -1,15 +1,29 @@
-from alpine:3.21.3
+from ubuntu:24.04
 
-run apk add postgresql17 postgresql-pgvector postgresql-plpython3 py3-pip py3-virtualenv curl jq
-run mkdir -p /run/postgresql && chown postgres /run/postgresql
+env DEBIAN_FRONTEND=noninteractive
+env PYTHONUNBUFFERED=1
 
-run mkdir -p /python-env && chown postgres /python-env
+#run apt update && apt install -y locales
+
+#run sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
+#env LANG en_US.UTF-8  
+#env LANGUAGE en_US:en  
+#env LC_ALL en_US.UTF-8 
+
+run apt update && apt install -y curl gnupg2 jq python3-pip python3-virtualenv
+
+run echo "deb http://apt.postgresql.org/pub/repos/apt noble-pgdg main" > /etc/apt/sources.list.d/pgdg.list
+run curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
+
+run apt update && apt install -y postgresql-17 postgresql-17-pgvector postgresql-plpython3-17
+run ln -s /usr/lib/postgresql/17/bin/postgres /usr/bin/postgres
+
+run mkdir -p /python-envs && chown postgres /python-envs && virtualenv /python-envs/production
+copy zengym /zengym
+run . /python-envs/production/bin/activate && pip install /zengym && rm -rfv /zengym
 
 user postgres
 
-run virtualenv /python-env
-copy --chown=postgres zengym /zengym
-run source /python-env/bin/activate && pip install /zengym && rm -rf /zengym && deactivate
-
 expose 5432
-cmd sh -c 'source /python-env/bin/activate && postgres -D /data'
+copy start-container.sh /start-container.sh
+cmd /start-container.sh

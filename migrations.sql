@@ -67,12 +67,14 @@ as (
   	owner
 );
 
+create extension vector;
 create language plpython3u;
-create or replace function create_embeddings_from_text(text) returns text
-as $$
-  from zengym import hello
 
-  return hello()
+create or replace function create_embeddings_from_text(input text) returns vector(768)
+as $$
+  from zengym.embeddings import encode
+
+  return encode(input)
 $$ language plpython3u;
 
 create extension if not exists file_fdw;
@@ -100,6 +102,7 @@ options (
 create table if not exists data.openfood as (
   select
   	*,
+    create_embeddings_from_text(concat(name, ' ', brands, ' ', product_name)) embedding,
   	now() as created_at,
   	md5(concat(code, '::', product_name, '::', brands, '::', name, food_alcohol, food_proteins, food_carbohydrates, food_fats, food_calories)) as hash
   from (
