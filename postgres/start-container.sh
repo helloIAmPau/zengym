@@ -4,8 +4,8 @@ if [ ! -f /data/postgresql.conf ]; then
   chown postgres /data
   gosu postgres /usr/lib/postgresql/17/bin/initdb -D /data
   gosu postgres /usr/lib/postgresql/17/bin/postgres -D /data &
-  while ! psql -c 'select 1'; do sleep 0.5; done
-  psql -v ON_ERROR_STOP=1 << SQL
+  while ! psql -U postgres -c 'select 1'; do sleep 0.5; done
+  psql -U postgres -v ON_ERROR_STOP=1 << SQL
 create user "$POSTGRES_USER" with password '$POSTGRES_PASSWORD';
 create database "$POSTGRES_DB";
 alter user "$POSTGRES_USER" with superuser;
