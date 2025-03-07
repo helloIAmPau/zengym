@@ -13,4 +13,4 @@ SQL
   gosu postgres /usr/lib/postgresql/17/bin/pg_ctl stop -D /data -m immediate
   fi
 
-gosu postgres bash -c ". /python-envs/production/bin/activate && /usr/lib/postgresql/17/bin/postgres -D /data"
+gosu postgres bash -c ". /python-env/bin/activate && /usr/lib/postgresql/17/bin/postgres -D /data"

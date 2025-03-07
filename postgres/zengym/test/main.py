@@ -2,9 +2,14 @@ from time import sleep
 from traceback import print_exc
 
 def test_embeddings_encode():
-  pass
+  from zengym.embeddings import encode
+
+  r = encode('a text')
+  assert 768 == len(r)
 
 try:
+  print('Loading tests')
+
   test_embeddings_encode()
 
   print('All good!')

@@ -15,8 +15,9 @@ services:
     build:
       context: './postgres'
     volumes:
-      - './postgres/zengym:/source'
-    command: 'sh -c "export PYTHONPATH="${PYTHONPATH}:/source" && virtualenv /python-envs/dev && . /python-envs/dev/bin/activate && pip install watchdog && cd /source && watchmedo auto-restart --patterns=\"*.py\" --recursive --signal SIGKILL python test.py"'
+      - './postgres/zengym/test:/test'
+      - './postgres/zengym/zengym:/python-env/lib/python3.12/site-packages/zengym'
+    command: 'sh -c ". /python-env/bin/activate && pip install watchdog && cd /test && watchmedo auto-restart --patterns=\"*.py\" --recursive --signal SIGKILL python main.py"'
   pgadmin:
     image: 'dpage/pgadmin4:8.12'
     restart: 'always'

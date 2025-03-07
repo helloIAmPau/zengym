@@ -18,9 +18,10 @@ run curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmo
 run apt update && apt install -y postgresql-17 postgresql-17-pgvector postgresql-plpython3-17
 run ln -s /usr/lib/postgresql/17/bin/postgres /usr/bin/postgres
 
-run mkdir -p /python-envs && chown postgres /python-envs && virtualenv /python-envs/production
+run mkdir -p /python-env && chown postgres /python-env && virtualenv /python-env
 copy zengym /zengym
-run . /python-envs/production/bin/activate && pip install /zengym && rm -rfv /zengym
+run . /python-env/bin/activate && pip install -i https://download.pytorch.org/whl/cpu torch==2.6.0 && pip install -r /zengym/requirements.txt 
+run . /python-env/bin/activate && pip install /zengym && rm -rfv /zengym
 
 expose 5432
 copy start-container.sh /start-container.sh

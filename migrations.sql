@@ -67,14 +67,16 @@ as (
   	owner
 );
 
-create extension vector;
-create language plpython3u;
+create extension if not exists vector;
+create or replace language plpython3u;
 
-create or replace function create_embeddings_from_text(input text) returns vector(768)
+drop function create_embeddings_from_text;
+
+create or replace function create_embeddings_from_text(t text) returns vector(768)
 as $$
   from zengym.embeddings import encode
 
-  return encode(input)
+  return encode(t)
 $$ language plpython3u;
 
 create extension if not exists file_fdw;
