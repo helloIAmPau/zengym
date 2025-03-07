@@ -70,8 +70,6 @@ as (
 create extension if not exists vector;
 create or replace language plpython3u;
 
-drop function create_embeddings_from_text;
-
 create or replace function create_embeddings_from_text(t text) returns vector(768)
 as $$
   from zengym.embeddings import encode
