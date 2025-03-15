@@ -72,9 +72,20 @@ create or replace language plpython3u;
 
 create or replace function create_embeddings_from_text(t text) returns vector(768)
 as $$
-  from zengym.embeddings import encode
+  from threading import Lock
 
-  return encode(t)
+  if 'import_embeddings_lock' not in GD:
+    plpy.info('First encode embeddings call: creating the lock object')
+    GD['import_embeddings_lock'] = Lock()
+
+  with GD['import_embeddings_lock']:
+    if 'embeddings' not in GD:
+      plpy.info('Embeddings module not loaded yet. Loading globally')
+      from zengym import embeddings
+      GD['embeddings'] = embeddings
+      plpy.info('Embedding module is ready to embed your stuff')
+
+  return GD['embeddings'].encode(t)
 $$ language plpython3u;
 
 create extension if not exists file_fdw;
@@ -82,61 +93,89 @@ create server if not exists csv_server foreign data wrapper file_fdw;
 
 create foreign table if not exists data.openfood_csv_data (
   code text,
-  generic_name text,
+  name text,
   product_name text,
   brands text,
-  alcohol_100g text,
-  proteins_100g text,
-  carbohydrates_100g text,
-  fat_100g text,
-  "energy-kcal_100g" text
+  food_alcohol text,
+  food_proteins text,
+  food_carbohydrates text,
+  food_fats text,
+  food_calories text
 )
 server csv_server
 options (
-  program 'curl -L ''https://static.openfoodfacts.org/data/openfoodfacts-products.jsonl.gz'' | gunzip | jq -r ''[.code, .generic_name, .product_name, .brands, .nutriments.alcohol_100g, .nutriments.proteins_100g, .nutriments.carbohydrates_100g, .nutriments.fat_100g, .nutriments."energy-kcal_100g" ] | @csv''',
+  filename '/datasets/food.csv',
   format 'csv',
   header 'false',
   delimiter ','
 );
 
-create table if not exists data.openfood as (
-  select
-  	*,
-    create_embeddings_from_text(concat(name, ' ', brands, ' ', product_name)) embedding,
-  	now() as created_at,
-  	md5(concat(code, '::', product_name, '::', brands, '::', name, food_alcohol, food_proteins, food_carbohydrates, food_fats, food_calories)) as hash
-  from (
-  	select
-      	code,
-      	case
-    			when generic_name is null or trim(generic_name) = '' then trim(concat(brands, ' ', product_name))
-    			else generic_name
-  		end as name,
-      	product_name,
-      	brands,
-      	case
-    			when alcohol_100g is null then 0
-  	  		else cast(alcohol_100g as numeric)
-  		end as food_alcohol,
-      	case
-    			when proteins_100g is null then 0
-    			else cast(proteins_100g as numeric)
-  		end as food_proteins,
-      	case
-    			when carbohydrates_100g is null then 0
-    			else cast(carbohydrates_100g as numeric)
-  		end as food_carbohydrates,
-  		case
-    			when fat_100g is null then 0
-    			else cast(fat_100g as numeric)
-  		end as food_fats,
-      	case
-    			when "energy-kcal_100g" is null then 0
-    			else cast("energy-kcal_100g" as numeric)
-  		end as food_calories
-    	from
-    		data.openfood_csv_data
-  )
+create table if not exists data.openfood (
+  code text,
+  name text,
+  product_name text,
+  brands text,
+  food_alcohol numeric,
+  food_proteins numeric,
+  food_carbohydrates numeric,
+  food_fats numeric,
+  food_calories numeric,
+  embedding vector(768),
+  created_at timestamp not null default now(),
+  hash text not null
 );
 
+create or replace procedure load_openfood_data()
+as $$
+declare
+  last_code_processed text;
+  processed int;
+begin
+  raise notice 'Starting openfood batch import';
+
+  loop
+    select coalesce(max(code), '') into last_code_processed from data.openfood;
+
+    insert into
+      data.openfood (
+        select
+        	*,
+          create_embeddings_from_text(concat(name, ' ', brands, ' ', product_name)) embedding,
+        	now() as created_at,
+        	md5(concat(code, '::', product_name, '::', brands, '::', name, food_alcohol, food_proteins, food_carbohydrates, food_fats, food_calories)) as hash
+        from (
+        	select
+            	code,
+              name,
+            	product_name,
+            	brands,
+              cast(food_alcohol as numeric) as food_alcohol,
+              cast(food_proteins as numeric) as food_proteins,
+              cast(food_carbohydrates as numeric) as food_carbohydrates,
+              cast(food_fats as numeric) as food_fats,
+              cast(food_calories as numeric) as food_calories
+          	from
+          		data.openfood_csv_data
+            where code > last_code_processed
+            order by code
+            limit 1000
+        )
+      );
+
+      get diagnostics processed = row_count;
+      if processed = 0 then
+        exit;
+      end if;
+
+      raise notice 'Last code processed: %', last_code_processed;
+      raise notice 'Processed % rows', processed;
+
+      commit;
+  end loop;
+end;
+$$ language plpgsql;
 commit;
+
+-- create table if not exists data.openfood as (
+--);
+

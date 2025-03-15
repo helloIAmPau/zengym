@@ -16,8 +16,12 @@ services:
       context: './postgres'
     volumes:
       - './postgres/zengym/test:/test'
+      - './datasets:/datasets'
       - './postgres/zengym/zengym:/python-env/lib/python3.12/site-packages/zengym'
     command: 'sh -c ". /python-env/bin/activate && pip install watchdog && cd /test && watchmedo auto-restart --patterns=\"*.py\" --recursive --signal SIGKILL python main.py"'
+  postgres:
+    volumes:
+      - './postgres/zengym/zengym:/python-env/lib/python3.12/site-packages/zengym'
   pgadmin:
     image: 'dpage/pgadmin4:8.12'
     restart: 'always'

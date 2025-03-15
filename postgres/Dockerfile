@@ -19,8 +19,12 @@ run apt update && apt install -y postgresql-17 postgresql-17-pgvector postgresql
 run ln -s /usr/lib/postgresql/17/bin/postgres /usr/bin/postgres
 
 run mkdir -p /python-env && chown postgres /python-env && virtualenv /python-env
+
+run . /python-env/bin/activate && pip install -i https://download.pytorch.org/whl/cpu torch==2.6.0
+copy requirements.txt /requirements.txt
+run . /python-env/bin/activate && pip install -r /requirements.txt 
+
 copy zengym /zengym
-run . /python-env/bin/activate && pip install -i https://download.pytorch.org/whl/cpu torch==2.6.0 && pip install -r /zengym/requirements.txt 
 run . /python-env/bin/activate && pip install /zengym && rm -rfv /zengym
 
 expose 5432

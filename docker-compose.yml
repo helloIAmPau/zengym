@@ -47,6 +47,7 @@ services:
       - 'POSTGRES_USER=${ZENGYM_POSTGRES_USER}'
       - 'POSTGRES_DB=${ZENGYM_POSTGRES_DB}'
     volumes:
+      - './datasets:/datasets'
       - './data/postgres:/data'
     networks:
       - 'backend'
