@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "expo start -c",
-    "android:release": "expo run:android --variant=release --device"
+    "start": "source ../env.develop && expo start -c",
+    "android:develop": "source ../env.develop && expo run:android --device",
+    "android:release": "expo run:android --variant=release --device",
+    "android:build-release": "cd android && ./gradlew app:assembleRelease && cd -"
   },
   "dependencies": {
     "@expo-google-fonts/sora": "^0.2.3",

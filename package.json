@@ -3,12 +3,12 @@
   "version": "0.0.0",
   "scripts": {
     "changelog": "standard-changelog",
-    "migrate:develop": "env $(cat .env.develop | xargs) npm run migrate",
-    "import-openfood:develop": "env $(cat .env.develop | xargs) npm run import-openfood",
+    "migrate:develop": "source ./env.develop && npm run migrate",
+    "import-openfood:develop": "source ./env.develop && npm run import-openfood",
     "migrate": "docker exec -i zengym-postgres-1 psql -U ${ZENGYM_POSTGRES_USER} -d ${ZENGYM_POSTGRES_DB} < migrations.sql",
     "import-openfood": "docker exec -i zengym-postgres-1 psql -U ${ZENGYM_POSTGRES_USER} -d ${ZENGYM_POSTGRES_DB} -c 'call load_openfood_data();'",
     "start": "docker compose up --build -d",
-    "develop": "env $(cat .env.develop | xargs) docker compose -f docker-compose.yml -f docker-compose.develop.yml up --build",
+    "develop": "source ./env.develop && docker compose -f docker-compose.yml -f docker-compose.develop.yml up --build",
     "stop": "docker compose -f docker-compose.yml -f docker-compose.develop.yml down"
   },
   "workspaces": [

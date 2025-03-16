@@ -1,4 +1,4 @@
-{$ZENGYM_HOSTNAME:localhost} {
+http://{$ZENGYM_HOSTNAME:localhost} {
   reverse_proxy /graphql http://graphql
 
   reverse_proxy /events http://events

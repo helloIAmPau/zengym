@@ -55,10 +55,11 @@ That said, there’s a [great guide](https://docs.expo.dev/get-started/set-up-yo
 As the first step, we need to set some environment variables that Zengym uses to configure the environment. The simplest way is to create a file, let’s call it deploy.env, in your home folder:
 
 ```
-ZENGYM_POSTGRES_DB=zengym
-ZENGYM_POSTGRES_PASSWORD=averyhardtoguesspassword
-ZENGYM_POSTGRES_USER=zengym
-ZENGYM_HOSTNAME=zengym.io
+export ZENGYM_POSTGRES_DB=zengym
+export ZENGYM_POSTGRES_PASSWORD=averyhardtoguesspassword
+export ZENGYM_POSTGRES_USER=zengym
+export ZENGYM_HOSTNAME=zengym.io
+export EXPO_PUBLIC_ZENGYM_API_URL=https://zengym.io
 ```
 
 Of course, replace the variables with your desired values. Then, clone the repo into the same folder:
@@ -69,7 +70,7 @@ git clone https://github.com/helloiampau/zengym
 Next, start the application server:
 
 ```bash
-cd zengym && source ../deploy.env npm start
+cd zengym && source ~/deploy.env && npm start
 ```
 
 Done. Simple, right?
@@ -80,7 +81,7 @@ The app requires minimal database configuration. You’ll probably need to run t
 Following my "just run a single command" philosophy, migrations are applied by simply running:
 
 ```bash
-source ../deploy.env npm run migrate
+source ~/deploy.env && npm run migrate
 ```
 
 Easy.
@@ -94,7 +95,7 @@ And guess what? How do you start the import?
 That’s right, with just one command.
 
 ```bash
-source ../deploy.env npm run import-openfood
+source ~/deploy.env && npm run import-openfood
 ```
 
 The procedure runs in batches and you can stop and restart it at any moment.
@@ -121,10 +122,10 @@ ZENGYM_UPLOAD_STORE_PASSWORD="thepasswordyouchooseinkeytool"
 ZENGYM_UPLOAD_KEY_PASSWORD="thepasswordyouchooseinkeytool"
 ```
 
-Finally, go to the `Zengym/android` folder and run
+Finally, go to the `Zengym/` folder and run
 
 ```bash
-./gradlew app:assembleRelease 
+source ~/deploy.env && npm run android:build-release
 ```
 
 After some terrifying messages, your APK, located in `Zengym/android/app/build/outputs/apk/release`, will be ready to upload and install on your device.
