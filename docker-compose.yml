@@ -8,6 +8,8 @@ services:
       - './Caddyfile:/etc/caddy/Caddyfile:ro'
       - './data/caddy/data:/data'
       - './data/caddy/config:/config'
+    environment:
+      - 'ZENGYM_HOSTNAME=${ZENGYM_HOSTNAME}'
     networks:
       - 'frontend'
   events:
@@ -30,7 +32,6 @@ services:
       args:
         service: 'graphql'
     environment:
-      - 'GOOGLE_GEMINI_API_KEY=${ZENGYM_GOOGLE_GEMINI_API_KEY}'
       - 'POSTGRES_PASSWORD=${ZENGYM_POSTGRES_PASSWORD}'
       - 'POSTGRES_USER=${ZENGYM_POSTGRES_USER}'
       - 'POSTGRES_DB=${ZENGYM_POSTGRES_DB}'
