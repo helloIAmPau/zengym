@@ -89,7 +89,7 @@ Easy.
 #### Openfood data
 
 ``
-ToDo: add GLF reference
+ToDo: add git LFS reference
 ``
 
 Zengym uses OpenFood data as the initial food database. They’re not essential, but having a starting dataset can be handy.
