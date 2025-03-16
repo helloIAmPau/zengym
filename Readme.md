@@ -88,6 +88,10 @@ Easy.
 
 #### Openfood data
 
+``
+ToDo: add GLF reference
+``
+
 Zengym uses OpenFood data as the initial food database. They’re not essential, but having a starting dataset can be handy.
 The import process is quite heavy, so we’ve set up a separate procedure that you can run in the background while doing more useful things, like living a happy life.
 
