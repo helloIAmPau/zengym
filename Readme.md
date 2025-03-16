@@ -39,7 +39,7 @@ The complexity of deploying an app—especially when it wasn’t written by you�
 That’s why I always make an effort to create software that you can run with just one command.
 However, even for software designed this way, a minimal set of dependencies must be installed to make the magic happen.
 
-For the server side of Zengym, you only need to install two pieces of software to get everything up and running. And if you don’t already have these on your machine, you’re probably not as nerdy as you think:
+For the server side of Zengym, you only need to install three pieces of software to get everything up and running. And if you don’t already have these on your machine, you’re probably not as nerdy as you think:
 
 * [__git__](https://git-scm.com/downloads): to clone the repo to your server
 * [__node__](https://nodejs.org/en/download): to run the scripts
