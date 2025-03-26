@@ -1,9 +1,20 @@
-import { StyleSheet, View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import Heading from './heading';
-import { theme } from '../theme';
 
-export default function Title({ children, icon }) {
+const styles = StyleSheet.create({
+  title: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  }
+});
+
+export default function Title({ title }) {
   return (
-    <Heading icon={ icon } size={ 2 }>{ children }</Heading>
+    <View style={ styles.title }>
+      <Heading>
+        { title }
+      </Heading>
+    </View>
   );
 };

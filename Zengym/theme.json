@@ -1,0 +1,12 @@
+{
+  "base": "#FAF3EE",
+  "base2": "#FFEAE0",
+  "color": "#053B47",
+  "color2": "#5E9299",
+  "success": "#E8B867",
+  "danger": "#FF0505",
+  "baseUnit": 16,
+  "font": "Sora_400Regular",
+  "fontBold": "Sora_600SemiBold"
+}
+

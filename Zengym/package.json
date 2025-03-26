@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "source ../env.develop && expo start -c",
-    "android:develop": "source ../env.develop && expo run:android --device",
+    "start": "source ../.env.develop && expo start -c",
+    "ios:develop": "source ../.env.develop && expo run:ios --device",
+    "android:develop": "source ../.env.develop && expo run:android --device",
     "android:release": "expo run:android --variant=release --device",
-    "android:build-release": "cd android && ./gradlew app:assembleRelease && cd -"
+    "android:build-release": "cd android && ./gradlew app:assembleRelease && cd -",
+    "android": "expo run:android",
+    "ios": "expo run:ios"
   },
   "dependencies": {
     "@expo-google-fonts/sora": "^0.2.3",
@@ -16,18 +19,21 @@
     "dayjs": "^1.11.13",
     "expo": "~52.0.37",
     "expo-font": "~13.0.4",
+    "expo-health-connect": "^0.1.1",
     "expo-splash-screen": "~0.29.22",
     "expo-status-bar": "~2.0.1",
     "phosphor-react-native": "^2.3.1",
     "react": "18.3.1",
     "react-native": "0.76.7",
     "react-native-gesture-handler": "~2.20.2",
+    "react-native-health-connect": "^3.3.2",
     "react-native-reanimated": "~3.16.1",
     "react-native-safe-area-context": "4.12.0",
     "react-native-screens": "~4.4.0",
     "react-native-svg": "15.8.0",
+    "react-native-ui-datepicker": "2.0.11",
     "socket.io-client": "4.8.1",
-    "react-native-ui-datepicker": "2.0.11"
+    "expo-build-properties": "~0.13.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

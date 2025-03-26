@@ -137,3 +137,5 @@ In this section, I'll outline the principles around which the entire application
 ## Nerd stuff
 
 In this section, I'll provide information on how I built the entire application, covering technologies, architecture, and design choices.
+
+### Vectorial search

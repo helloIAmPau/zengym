@@ -2,6 +2,9 @@ begin;
 
 create schema if not exists data;
 
+create extension if not exists columnar;
+alter database :DBNAME set default_table_access_method = 'heap';
+
 create table if not exists data.log (
   uid uuid not null,
   owner uuid not null,
@@ -31,7 +34,7 @@ create table if not exists data.log (
   target_calories_delta integer,
 
   completed boolean
-);
+) using columnar;
 
 drop view if exists data.log_unified;
 
@@ -70,22 +73,22 @@ as (
 create extension if not exists vector;
 create or replace language plpython3u;
 
-create or replace function create_embeddings_from_text(t text) returns vector(768)
+create or replace function create_embedding_from_text(t text) returns vector(768)
 as $$
   from threading import Lock
 
-  if 'import_embeddings_lock' not in GD:
-    plpy.info('First encode embeddings call: creating the lock object')
-    GD['import_embeddings_lock'] = Lock()
+  if 'import_embedding_lock' not in GD:
+    plpy.info('First encode embedding call: creating the lock object')
+    GD['import_embedding_lock'] = Lock()
 
-  with GD['import_embeddings_lock']:
-    if 'embeddings' not in GD:
+  with GD['import_embedding_lock']:
+    if 'embedding' not in GD:
       plpy.info('Embeddings module not loaded yet. Loading globally')
-      from zengym import embeddings
-      GD['embeddings'] = embeddings
+      from zengym import embedding
+      GD['embedding'] = embedding
       plpy.info('Embedding module is ready to embed your stuff')
 
-  return GD['embeddings'].encode(t)
+  return GD['embedding'].encode(t)
 $$ language plpython3u;
 
 create extension if not exists file_fdw;
@@ -125,6 +128,8 @@ create table if not exists data.openfood (
   hash text not null
 );
 
+create index if not exists hnsw_cosine on data.openfood using hnsw (embedding vector_cosine_ops);
+
 create or replace procedure load_openfood_data()
 as $$
 declare
@@ -140,7 +145,7 @@ begin
       data.openfood (
         select
         	*,
-          create_embeddings_from_text(concat(name, ' ', brands, ' ', product_name)) embedding,
+          create_embedding_from_text(concat(name, ' ', brands, ' ', product_name)) embedding,
         	now() as created_at,
         	md5(concat(code, '::', product_name, '::', brands, '::', name, food_alcohol, food_proteins, food_carbohydrates, food_fats, food_calories)) as hash
         from (

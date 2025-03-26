@@ -62,7 +62,7 @@ type Query {
   me: User!
   today(day: Date!): Today!
   diary(day: Date!): [ DiaryEntry ]!
-  searchFood(query: String!): [ Food ]!
+  searchFood(text: String!): [ Food ]!
 }
 
 type Mutation {

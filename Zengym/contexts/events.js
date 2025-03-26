@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState, useContext, createContext, useMemo } from 'react';
+import { useCallback, useLayoutEffect, createContext, useContext, useMemo, useState } from 'react';
 import { io } from 'socket.io-client';
 
 const Context = createContext();
@@ -14,12 +14,15 @@ export const EventsProvider = function({ children }) {
     const socket = io(global.API_URL, {
       path: '/events',
     });
+    
     socket.on('connect', function() {
       console.log('Event socket connected');
     });
+    
     socket.on('disconnect', function() {
       console.log('Event socket disconnected');
     });
+    
     socket.on('connect_error', function(error) {
       console.log(error);
     });

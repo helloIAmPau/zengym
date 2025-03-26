@@ -1,20 +1,19 @@
 import { View, StyleSheet } from 'react-native';
 
-import { theme } from '../theme.js';
+import theme from '../theme';
 
 const styles = StyleSheet.create({
   page: {
     flex: 1,
-    gap: 1.5 * theme.baseUnit,
-    marginTop: 1.5 * theme.baseUnit,
-    marginLeft: theme.baseUnit,
-    marginRight: theme.baseUnit
+    paddingLeft: theme.baseUnit,
+    paddingRight: theme.baseUnit,
+    gap: theme.baseUnit * 1.5
   }
 });
 
 export default function Page({ children }) {
   return (
-    <View style={ styles.page } >
+    <View style={ styles.page }>
       { children }
     </View>
   );

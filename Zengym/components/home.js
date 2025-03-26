@@ -1,10 +1,18 @@
 import Page from './page';
-import Today from './today';
+
+import HomeRow from './home-row';
+import NutritionCard from './nutrition-card';
+import ActivitiesCard from './activities-card';
+import StreakRow from './streak-row';
 
 export default function Home() {
   return (
     <Page>
-      <Today />
+      <StreakRow />
+      <HomeRow>
+        <NutritionCard />
+        <ActivitiesCard />
+      </HomeRow>
     </Page>
   );
 };
