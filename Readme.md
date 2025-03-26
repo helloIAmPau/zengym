@@ -58,7 +58,7 @@ As the first step, we need to set some environment variables that Zengym uses to
 export ZENGYM_POSTGRES_DB=zengym
 export ZENGYM_POSTGRES_PASSWORD=averyhardtoguesspassword
 export ZENGYM_POSTGRES_USER=zengym
-export ZENGYM_HOSTNAME=zengym.io
+export ZENGYM_HOSTNAME=http://zengym.io
 export EXPO_PUBLIC_ZENGYM_API_URL=https://zengym.io
 ```
 
