@@ -73,7 +73,7 @@ as (
 create extension if not exists vector;
 create or replace language plpython3u;
 
-create or replace function create_embedding_from_text(t text) returns vector(768)
+create or replace function create_embedding_from_text(t text) returns vector(384)
 as $$
   from threading import Lock
 
@@ -123,7 +123,7 @@ create table if not exists data.openfood (
   food_carbohydrates numeric,
   food_fats numeric,
   food_calories numeric,
-  embedding vector(768),
+  embedding vector(384),
   created_at timestamp not null default now(),
   hash text not null
 );
@@ -145,7 +145,7 @@ begin
       data.openfood (
         select
         	*,
-          create_embedding_from_text(concat(name, ' ', brands, ' ', product_name)) embedding,
+          create_embedding_from_text(concat(name, ' ', brands, ' ', product_name)) as embedding,
         	now() as created_at,
         	md5(concat(code, '::', product_name, '::', brands, '::', name, food_alcohol, food_proteins, food_carbohydrates, food_fats, food_calories)) as hash
         from (

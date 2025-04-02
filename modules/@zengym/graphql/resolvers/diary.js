@@ -14,13 +14,7 @@ select
 	food_calories
 from data.openfood
 order by embedding <-> (
-  select
-    embedding
-  from data.openfood
-  where
-    embedding in (
-      select create_embedding_from_text($1)
-    )
+  select create_embedding_from_text($1)
 )
 limit 10
   `, [ text ])

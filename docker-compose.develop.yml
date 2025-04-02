@@ -11,14 +11,15 @@ services:
       - './modules:/source/modules'
   pgdevelop:
     image: 'zengym/pgdevelop:0.0.0'
+    runtime: 'nvidia'
     restart: 'always'
     build:
       context: './postgres'
+      target: 'develop'
     volumes:
-      - './postgres/zengym/test:/test'
+      - './postgres/scripts:/scripts'
       - './datasets:/datasets'
       - './postgres/zengym/zengym:/python-env/lib/python3.12/site-packages/zengym'
-    command: 'sh -c ". /python-env/bin/activate && pip install watchdog && cd /test && watchmedo auto-restart --patterns=\"*.py\" --recursive --signal SIGKILL python main.py"'
   postgres:
     volumes:
       - './postgres/zengym/zengym:/python-env/lib/python3.12/site-packages/zengym'

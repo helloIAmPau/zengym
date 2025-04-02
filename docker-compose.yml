@@ -2,10 +2,12 @@ services:
   ingress:
     image: 'caddy:2.8.4-alpine'
     restart: 'always'
+    configs:
+      - source: 'caddyfile'
+        target: '/etc/caddy/Caddyfile'
     ports:
       - '80:80'
     volumes:
-      - './Caddyfile:/etc/caddy/Caddyfile:ro'
       - './data/caddy/data:/data'
       - './data/caddy/config:/config'
     environment:
@@ -41,6 +43,7 @@ services:
   postgres:
     image: 'zengym/postgres:17'
     restart: 'always'
+    runtime: 'nvidia'
     build:
       context: './postgres'
     environment:
@@ -56,3 +59,7 @@ services:
 networks:
   frontend:
   backend:
+
+configs:
+  caddyfile:
+    file: './Caddyfile'
